@@ -1,5 +1,5 @@
 #include "TkWord.h"
-
+#include <string.h>
 
 TkWord *tk_hashtable[MAXKEY];
 DynArray tktable;
@@ -29,12 +29,12 @@ TkWord *tkword_direct_insert(TkWord *tp)
 
 TkWord *tkword_find(char *p, int hash_key)
 {
-    TkWord *p = NULL, p1;
-    for(p1 = tk_hashtable[hash_key]; p1; p1 = p1.next)
+    TkWord *tp = 0, *p1;
+    for(p1 = tk_hashtable[hash_key]; p1; p1 = p1->next)
     {
         if(strcmp(p, p1->spelling) == 0)
         {
-            tp = tp1;
+            tp = p1;
         }
     }
     return tp;
