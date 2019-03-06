@@ -3,6 +3,8 @@
 
 Lex::Lex()
 {
+	init_lex();
+	start_lex((char *)"xx.c");
 }
 
 Lex::~Lex()
@@ -12,7 +14,6 @@ Lex::~Lex()
 
 void Lex::init_lex()
 {	
-    TkWord *tp;
     static TkWord keywords[] = {
     {TK_PLUS, NULL, (char *)"+"},
     {TK_MINUS, NULL, (char *)"-"},
@@ -74,7 +75,83 @@ void Lex::getword()
 void Lex::start_lex(char *filepath)
 {
 	fd = fopen(filepath, "rb");
+	if(fd == NULL)
+	{
+		printf("file don't exit\n'");
+		return;
+	}
+	while(wd != EOF)
+	{
+		getword();
+		deal_token();
+	}
 
 }
 
+void Lex::deal_token()
+{
+	deal_unnormal_token();
+	switch(wd)
+	{
+	}
+}
 
+void Lex::deal_unnormal_token()
+{
+	if(wd == '/')
+	{
+		getword();
+		if(wd == '*')
+		{
+			deal_note();
+		}
+		else
+		{
+			ungetc(wd, fd);
+			wd = '/';
+			return;
+		}
+	}
+	else if(wd == ' ')
+	{
+		deal_space();
+	}
+}
+
+void Lex::deal_note()
+{
+	for(;;)
+	{
+		getword();
+		if(wd == '*')
+		{
+			getword();
+			if(wd == '/')
+			{
+				getword();
+				break;
+			}
+			else
+			{
+				ungetc(wd, fd);
+				continue;
+			}
+		}
+	}
+}
+
+void Lex::deal_space()
+{
+	for(;;)
+	{
+		getword();
+		if(wd == '\n' || wd == '\r' || wd == ' ')
+		{
+			continue;
+		}
+		else
+		{
+			break;
+		}
+	}
+}
