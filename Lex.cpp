@@ -1,10 +1,11 @@
 #include "Lex.h"
 #include "TkWord.h"
 
+
 Lex::Lex()
 {
 	init_lex();
-	start_lex((char *)"xx.c");
+	start_lex("xx.c");
 }
 
 Lex::~Lex()
@@ -59,7 +60,6 @@ void Lex::init_lex()
     {KW_SIZEOF, NULL, (char *)"sizeof"}};
 	
 	
-	dynarray_init(&tktable, 8);
 	for(tp = &keywords[0]; tp->spelling!=NULL; tp++)
 	{
 		tkword_direct_insert(tp);
@@ -72,7 +72,7 @@ void Lex::getword()
 	wd = getc(fd);
 }
 
-void Lex::start_lex(char *filepath)
+void Lex::start_lex(const char* filepath)
 {
 	fd = fopen(filepath, "rb");
 	if(fd == NULL)

@@ -1,10 +1,10 @@
 #include "TkWord.h"
 #include <string.h>
-
+#include "DynArray.h"
 TkWord *tk_hashtable[MAXKEY];
 DynArray tktable;
 
-int get_hash(char *key)
+int get_hash(const char *key)
 {
     int h = 0, g;
     while(*key)
@@ -21,13 +21,13 @@ TkWord *tkword_direct_insert(TkWord *tp)
 {
     int hash_key;
     hash_key = get_hash(tp->spelling);
-    dynarray_add(&tktable, tp);
+    tktable.add_token(tp);
     tp->next = tk_hashtable[hash_key]; //将冲突连成一个链表
     tk_hashtable[hash_key] = tp;
     return tp;
 }
 
-TkWord *tkword_find(char *p, int hash_key)
+TkWord *tkword_find(const char *p, int hash_key)
 {
     TkWord *tp = 0, *p1;
     for(p1 = tk_hashtable[hash_key]; p1; p1 = p1->next)

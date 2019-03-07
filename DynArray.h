@@ -2,16 +2,16 @@
 #include <vector>
 #include "TkWord.h"
 
-using namesapce sdt;
+using namespace std;
 
 class DynArray
 {
 public:
 	DynArray();
 	~DynArray();
-	void add_token();	
+	void add_token(TkWord *p);	
 
     int size;
-    vector<TkWord> data;
+    vector<TkWord* > data;
 };
 

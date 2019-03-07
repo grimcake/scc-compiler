@@ -6,7 +6,7 @@ scc : $(objects)
 main.o : main.cpp DynArray.h
 	g++ -c main.cpp
 
-DynArray.o : DynArray.cpp DynArray.h
+DynArray.o : DynArray.cpp DynArray.h TkWord.h
 	g++ -c DynArray.cpp
 
 Lex.o : Lex.cpp Lex.h TkWord.h

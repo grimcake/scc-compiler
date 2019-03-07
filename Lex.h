@@ -1,6 +1,9 @@
 #pragma once
 #include <stdio.h>
 #include "TkWord.h"
+#include <string>
+
+using namespace std;
 class Lex
 {
 public:
@@ -8,7 +11,7 @@ public:
     ~Lex();
     void init_lex();
 	void getword();
-	void start_lex(char *filepath);
+	void start_lex(const char* filepath);
 	void deal_token();
 	void deal_unnormal_token();
 	void deal_note();

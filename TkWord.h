@@ -1,14 +1,15 @@
 #pragma once
-#include "DynArray.h"
 
 #define MAXKEY 1024
 
-typedef struct TkWord
+class DynArray;
+
+struct TkWord
 {
     int tkcode;  //单词编码
     struct TkWord *next; //指向哈希冲突的同义词
-    char *spelling;  //单词字符串
-}TkWord;
+    const char *spelling;  //单词字符串
+};
 
 
 enum token_code
@@ -64,8 +65,7 @@ enum token_code
 extern TkWord *tk_hashtable[MAXKEY];
 extern DynArray tktable;
 
-
-int get_hash(char *key);
+int get_hash(const char *key);
 TkWord *tkword_direct_insert(TkWord *tp);
-TkWord *tkword_find(char *p, int hash_key);
+TkWord *tkword_find(const char *p, int hash_key);
 
