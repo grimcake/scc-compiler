@@ -1,14 +1,17 @@
 #pragma once
+#include <vector>
+#include "TkWord.h"
 
-typedef struct DynArray
+using namesapce sdt;
+
+class DynArray
 {
-    int size;
-    int caplen;
-    void **data;
-}DynArray;
+public:
+	DynArray();
+	~DynArray();
+	void add_token();	
 
-void dynarray_realloc(DynArray *parr, int new_size);
-void dynarray_add(DynArray *parr, void *data);
-void dynarray_init(DynArray *parr, int init_size);
-void dynarray_free(DynArray *parr);
-int dynarray_search(DynArray *parr, int key);
+    int size;
+    vector<TkWord> data;
+};
+
