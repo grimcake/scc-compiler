@@ -16,11 +16,13 @@ public:
 	void deal_unnormal_token();
 	void deal_note();
 	void deal_space();
+    void show_token();
+    string string_from_tkcolor(int tk_color);
 
 private:
 	char wd;
 	FILE *fd;
 	TkWord *tp;
-    
+    int tkcolor;
 };
 

@@ -3,7 +3,7 @@ objects = main.o DynArray.o Lex.o TkWord.o
 scc : $(objects)
 	g++ -o scc $(objects)
 
-main.o : main.cpp DynArray.h
+main.o : main.cpp main.h DynArray.h
 	g++ -c main.cpp
 
 DynArray.o : DynArray.cpp DynArray.h TkWord.h

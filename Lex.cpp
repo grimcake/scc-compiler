@@ -1,11 +1,10 @@
 #include "Lex.h"
-#include "TkWord.h"
 
 
 Lex::Lex()
 {
 	init_lex();
-	start_lex("xx.c");
+	start_lex("./test.c");
 }
 
 Lex::~Lex()
@@ -16,51 +15,52 @@ Lex::~Lex()
 void Lex::init_lex()
 {	
     static TkWord keywords[] = {
-    {TK_PLUS, NULL, (char *)"+"},
-    {TK_MINUS, NULL, (char *)"-"},
-    {TK_STAR, NULL, (char *)"*"},
-    {TK_DIVIDE, NULL, (char *)"/"},
-    {TK_MOD, NULL, (char *)"%"},
-    {TK_ASSIGN, NULL, (char *)"="},
-    {TK_EQ, NULL, (char *)"=="},
-    {TK_NEQ, NULL, (char *)"!="},
-    {TK_GT, NULL, (char *)">"},
-    {TK_GEQ, NULL, (char *)">="},
-    {TK_LT, NULL, (char *)"<"},
-    {TK_LEQ, NULL, (char *)"<="},
-    {TK_POINTTO, NULL, (char *)"->"},
-    {TK_DOT, NULL, (char *)"."},
-    {TK_AND, NULL, (char *)"&"},
-    {TK_LS, NULL, (char *)"("},
-    {TK_RS, NULL, (char *)")"},
-    {TK_LM, NULL, (char *)"["},
-    {TK_RM, NULL, (char *)"]"},
-    {TK_LL, NULL, (char *)"{"},
-    {TK_RL, NULL, (char *)"}"},
-    {TK_SEMICOLON, NULL, (char *)";"},
-    {TK_COMMA, NULL, (char *)","},
+    {TK_PLUS, NULL, "+"},
+    {TK_MINUS, NULL, "-"},
+    {TK_STAR, NULL, "*"},
+    {TK_DIVIDE, NULL, "/"},
+    {TK_MOD, NULL, "%"},
+    {TK_ASSIGN, NULL, "="},
+    {TK_EQ, NULL, "=="},
+    {TK_NEQ, NULL, "!="},
+    {TK_GT, NULL, ">"},
+    {TK_GEQ, NULL, ">="},
+    {TK_LT, NULL, "<"},
+    {TK_LEQ, NULL, "<="},
+    {TK_POINTTO, NULL, "->"},
+    {TK_DOT, NULL, "."},
+    {TK_AND, NULL, "&"},
+    {TK_LS, NULL, "("},
+    {TK_RS, NULL, ")"},
+    {TK_LM, NULL, "["},
+    {TK_RM, NULL, "]"},
+    {TK_LL, NULL, "{"},
+    {TK_RL, NULL, "}"},
+    {TK_SEMICOLON, NULL, ";"},
+    {TK_COMMA, NULL, ","},
 
     //常量
-    {TK_CINT, NULL, (char *)"CINT"},   
-    {TK_CCHAR, NULL, (char *)"CCHAR"},
-    {TK_CSTR, NULL, (char *)"CSTR"},
+    {TK_CINT, NULL, "CINT"},   
+    {TK_CCHAR, NULL, "CCHAR"},
+    {TK_CSTR, NULL, "CSTR"},
 
     //关键字
-    {KW_CHAR, NULL, (char *)"char"},
-    {KW_SHORT, NULL, (char *)"short"},
-    {KW_INT, NULL, (char *)"int"},
-    {KW_VOID, NULL, (char *)"void"},
-    {KW_STRUCT, NULL, (char *)"struct"},
-    {KW_IF, NULL, (char *)"if"},
-    {KW_ELSE, NULL, (char *)"else"},
-    {KW_FOR, NULL, (char *)"for"},
-    {KW_CONTINUE, NULL, (char *)"continue"},
-    {KW_BREAK, NULL, (char *)"break"}, 
-    {KW_RETURN, NULL, (char *)"return"},
-    {KW_SIZEOF, NULL, (char *)"sizeof"}};
+    {KW_CHAR, NULL, "char"},
+    {KW_SHORT, NULL, "short"},
+    {KW_INT, NULL, "int"},
+    {KW_VOID, NULL, "void"},
+    {KW_STRUCT, NULL, "struct"},
+    {KW_IF, NULL, "if"},
+    {KW_ELSE, NULL, "else"},
+    {KW_FOR, NULL, "for"},
+    {KW_CONTINUE, NULL, "continue"},
+    {KW_BREAK, NULL, "break"}, 
+    {KW_RETURN, NULL, "return"},
+    {KW_SIZEOF, NULL, "sizeof"},
+    {-1, NULL, "NULL"}};
 	
 	
-	for(tp = &keywords[0]; tp->spelling!=NULL; tp++)
+	for(tp = &keywords[0]; tp->tkcode != -1; tp++)
 	{
 		tkword_direct_insert(tp);
 	}
@@ -84,6 +84,7 @@ void Lex::start_lex(const char* filepath)
 	{
 		getword();
 		deal_token();
+        show_token();
 	}
 
 }
@@ -91,11 +92,12 @@ void Lex::start_lex(const char* filepath)
 void Lex::deal_token()
 {
 	deal_unnormal_token();
-	switch(wd)
-	{
-	}
+	
+    if(wd == '+')
+    {
+        tkcolor = TK_PLUS; 
+    }
 }
-
 void Lex::deal_unnormal_token()
 {
 	if(wd == '/')
@@ -154,4 +156,15 @@ void Lex::deal_space()
 			break;
 		}
 	}
+}
+
+void Lex::show_token()
+{
+    string str = string_from_tkcolor(tkcolor);
+    printf("%s\n", str.c_str());
+}
+
+string Lex::string_from_tkcolor(int tk_color)
+{
+
 }

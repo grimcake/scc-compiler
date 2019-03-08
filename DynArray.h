@@ -1,8 +1,9 @@
 #pragma once
 #include <vector>
-#include "TkWord.h"
 
 using namespace std;
+
+class TkWord;
 
 class DynArray
 {

@@ -1,15 +1,15 @@
 #include "TkWord.h"
 #include <string.h>
-#include "DynArray.h"
+class DynArray;
 TkWord *tk_hashtable[MAXKEY];
 DynArray tktable;
 
-int get_hash(const char *key)
+int get_hash(string key)
 {
     int h = 0, g;
-    while(*key)
+    for(int i = 0; i<key.size(); i++)
     {
-        h = (h<<4)+*key++;
+        h = (h<<4)+key[i];
         g = h & 0xf0000000;
         if(g) h^=g>>24;
         h &= ~g;
@@ -27,12 +27,12 @@ TkWord *tkword_direct_insert(TkWord *tp)
     return tp;
 }
 
-TkWord *tkword_find(const char *p, int hash_key)
+TkWord *tkword_find(const string p, int hash_key)
 {
     TkWord *tp = 0, *p1;
     for(p1 = tk_hashtable[hash_key]; p1; p1 = p1->next)
     {
-        if(strcmp(p, p1->spelling) == 0)
+        if(p == p1->spelling)
         {
             tp = p1;
         }
