@@ -69,5 +69,5 @@ extern DynArray tktable;
 
 int get_hash(string key);
 TkWord *tkword_direct_insert(TkWord *tp);
-TkWord *tkword_find(const char *p, int hash_key);
+TkWord *tkword_find(const string p, int hash_key);
 

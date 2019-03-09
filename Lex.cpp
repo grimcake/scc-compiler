@@ -1,10 +1,14 @@
 #include "Lex.h"
+#include <iostream>
+using namespace std;
 
 
 Lex::Lex()
 {
 	init_lex();
 	start_lex("./test.c");
+
+    show_tktable();
 }
 
 Lex::~Lex()
@@ -57,6 +61,7 @@ void Lex::init_lex()
     {KW_BREAK, NULL, "break"}, 
     {KW_RETURN, NULL, "return"},
     {KW_SIZEOF, NULL, "sizeof"},
+    {TK_REG, NULL, "reg"},
     {-1, NULL, "NULL"}};
 	
 	
@@ -82,8 +87,10 @@ void Lex::start_lex(const char* filepath)
 	}
 	while(wd != EOF)
 	{
+        tmp_wd.clear();
 		getword();
-		deal_token();
+    	int is_unormal = deal_unnormal_token();
+		if(is_unormal == 0) deal_token();
         show_token();
 	}
 
@@ -91,14 +98,69 @@ void Lex::start_lex(const char* filepath)
 
 void Lex::deal_token()
 {
-	deal_unnormal_token();
 	
-    if(wd == '+')
+    if((wd >= 'a' && wd <='z') || (wd >= 'A' && wd <= 'Z'))
     {
-        tkcolor = TK_PLUS; 
+        //cout<<"  "<<wd<<endl;
+        tmp_wd += wd;
+        deal_parse();
+        //cout<<":  "<<tmp_wd<<endl;
+
+        TkWord *tmp_find = NULL;
+        int tmp_hash = get_hash(tmp_wd); 
+        tmp_find = tkword_find(tmp_wd, tmp_hash);
+
+
+        if(tmp_find == NULL)
+        {
+            tmp_find = new TkWord;
+            tmp_find->tkcode = TK_REG;
+            tmp_find->next = NULL;
+            tmp_find->spelling = tmp_wd;
+            //cout<<"!  "<<tmp_find->spelling<<endl;
+            tkword_direct_insert(tmp_find);
+            tkcolor = TK_REG;
+            delete(tmp_find);
+        }
+    }
+
+    else if(wd == '+')
+    {
+        tkcolor = TK_PLUS;
+        tmp_wd += '+';
+    }
+    else if(wd == '=')
+    {
+        tkcolor = TK_ASSIGN;
+        tmp_wd += '=';
+    }
+    else if(wd == '(')
+    {
+        tkcolor = TK_LS;
+        tmp_wd += '(';
+    }
+    else if(wd == ')')
+    {
+        tkcolor = TK_RS;
+        tmp_wd += ')';
+    }
+    else if(wd == ';')
+    {
+        tkcolor = TK_SEMICOLON;
+        tmp_wd += ';';
+    }
+    else if(wd == '{')
+    {
+        tkcolor = TK_LL;
+        tmp_wd += '{';
+    }
+    else if(wd == '}')
+    {
+        tkcolor = TK_RL;
+        tmp_wd += '}';
     }
 }
-void Lex::deal_unnormal_token()
+int Lex::deal_unnormal_token()
 {
 	if(wd == '/')
 	{
@@ -111,13 +173,16 @@ void Lex::deal_unnormal_token()
 		{
 			ungetc(wd, fd);
 			wd = '/';
-			return;
 		}
+        return 1;
 	}
 	else if(wd == ' ')
 	{
+        tmp_wd += wd;
 		deal_space();
+        return 1;
 	}
+    return 0;
 }
 
 void Lex::deal_note()
@@ -149,22 +214,58 @@ void Lex::deal_space()
 		getword();
 		if(wd == '\n' || wd == '\r' || wd == ' ')
 		{
+            tmp_wd += wd;
 			continue;
 		}
 		else
 		{
+            ungetc(wd, fd);
 			break;
 		}
 	}
 }
 
-void Lex::show_token()
+void Lex::deal_parse()
 {
-    string str = string_from_tkcolor(tkcolor);
-    printf("%s\n", str.c_str());
+    for(;;)
+    {
+        getword();
+        if((wd >= 'a' && wd <= 'z') || (wd >= 'A' && wd <= 'Z') || (wd == '_'))
+        {
+            tmp_wd += wd;
+            continue;
+        }
+        else 
+        {
+            ungetc(wd, fd);
+            break;
+        }
+    }
 }
 
-string Lex::string_from_tkcolor(int tk_color)
+void Lex::show_token()
 {
+    if(tkcolor <= TK_COMMA) 
+    {
+        printf("\033[31m");
+    }
+    
+    printf("%s", tmp_wd.c_str());
+}
+string Lex::string_from_tkcolor(int tk_color, int &color)
+{
+    if(tk_color == TK_PLUS)
+    {   
+        color = 1;
+        return "+";
+    }
+}
 
+void Lex::show_tktable()
+{
+    vector<TkWord * >::iterator it;
+    for(it = tktable.data.begin(); it != tktable.data.end(); it++)
+    {
+        cout<<(*it)->spelling<<endl;
+    }
 }

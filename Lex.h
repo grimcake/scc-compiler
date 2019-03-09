@@ -13,14 +13,18 @@ public:
 	void getword();
 	void start_lex(const char* filepath);
 	void deal_token();
-	void deal_unnormal_token();
+	int deal_unnormal_token();
 	void deal_note();
 	void deal_space();
+    void deal_parse();
     void show_token();
-    string string_from_tkcolor(int tk_color);
+    string string_from_tkcolor(int tk_color, int &color);
+
+    void show_tktable();
 
 private:
 	char wd;
+    string tmp_wd;
 	FILE *fd;
 	TkWord *tp;
     int tkcolor;
