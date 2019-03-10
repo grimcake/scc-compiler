@@ -101,10 +101,8 @@ void Lex::deal_token()
 	
     if((wd >= 'a' && wd <='z') || (wd >= 'A' && wd <= 'Z'))
     {
-        //cout<<"  "<<wd<<endl;
         tmp_wd += wd;
         deal_parse();
-        //cout<<":  "<<tmp_wd<<endl;
 
         TkWord *tmp_find = NULL;
         int tmp_hash = get_hash(tmp_wd); 
@@ -113,15 +111,29 @@ void Lex::deal_token()
 
         if(tmp_find == NULL)
         {
-            tmp_find = new TkWord;
+            tmp_find = (TkWord *)malloc(sizeof(TkWord));
             tmp_find->tkcode = TK_REG;
             tmp_find->next = NULL;
             tmp_find->spelling = tmp_wd;
-            //cout<<"!  "<<tmp_find->spelling<<endl;
             tkword_direct_insert(tmp_find);
             tkcolor = TK_REG;
-            delete(tmp_find);
         }
+        else
+        {
+            if(tmp_find->tkcode == TK_REG)
+            {
+                tkcolor = TK_REG;
+            }
+            else tkcolor = KW_KEYWORD;
+        }
+    }
+
+    else if(wd>='0' && wd<='9')
+    {
+        tkcolor = TK_CINT;
+        tmp_wd += wd;
+        deal_number();
+
     }
 
     else if(wd == '+')
@@ -176,6 +188,11 @@ int Lex::deal_unnormal_token()
 		}
         return 1;
 	}
+    else if(wd == '\n' || wd == '\t')
+    {
+        tmp_wd += wd;
+        return 1;
+    }
 	else if(wd == ' ')
 	{
         tmp_wd += wd;
@@ -243,13 +260,38 @@ void Lex::deal_parse()
     }
 }
 
+void Lex::deal_number()
+{
+    for(;;)
+    {
+        getword();
+        if(wd >= '0' && wd <= '9')
+        {
+            tmp_wd += wd;
+            continue;
+        }
+        else
+        {
+            ungetc(wd, fd);
+            break;
+        }
+    }
+}
+
 void Lex::show_token()
 {
     if(tkcolor <= TK_COMMA) 
     {
+        printf("\033[33m");
+    }
+    else if(tkcolor == TK_REG)
+    {
+        printf("\033[36m");
+    }
+    else if(tkcolor == KW_KEYWORD)
+    {
         printf("\033[31m");
     }
-    
     printf("%s", tmp_wd.c_str());
 }
 string Lex::string_from_tkcolor(int tk_color, int &color)
@@ -266,6 +308,6 @@ void Lex::show_tktable()
     vector<TkWord * >::iterator it;
     for(it = tktable.data.begin(); it != tktable.data.end(); it++)
     {
-        cout<<(*it)->spelling<<endl;
+        cout<<(*it)->spelling<<"  "<<(*it)->tkcode<<endl;
     }
 }

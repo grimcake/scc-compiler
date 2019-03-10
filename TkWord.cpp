@@ -29,7 +29,7 @@ TkWord *tkword_direct_insert(TkWord *tp)
 
 TkWord *tkword_find(const string p, int hash_key)
 {
-    TkWord *tp = 0, *p1;
+    TkWord *tp = nullptr, *p1;
     for(p1 = tk_hashtable[hash_key]; p1; p1 = p1->next)
     {
         if(p == p1->spelling)

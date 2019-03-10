@@ -58,7 +58,8 @@ enum token_code
     KW_BREAK,
     KW_RETURN,
     KW_SIZEOF,
-    
+    KW_KEYWORD, //代表所有关键字，用于染色
+
     TK_REG,  //reg
     TK_NOTE // /*/
 
