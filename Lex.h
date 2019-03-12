@@ -22,9 +22,9 @@ public:
     string string_from_tkcolor(int tk_color, int &color);
 
     void show_tktable();
+    char wd;
 
 private:
-	char wd;
     string tmp_wd;
 	FILE *fd;
 	TkWord *tp;

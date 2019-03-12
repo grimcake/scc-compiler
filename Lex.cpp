@@ -1,4 +1,5 @@
 #include "Lex.h"
+#include "myenum.h"
 #include <iostream>
 using namespace std;
 
@@ -6,9 +7,9 @@ using namespace std;
 Lex::Lex()
 {
 	init_lex();
-	start_lex("./test.c");
+	//start_lex("./test.c");
 
-    show_tktable();
+    //show_tktable();
 }
 
 Lex::~Lex()
@@ -89,8 +90,7 @@ void Lex::start_lex(const char* filepath)
 	{
         tmp_wd.clear();
 		getword();
-    	int is_unormal = deal_unnormal_token();
-		if(is_unormal == 0) deal_token();
+        deal_token();
         show_token();
 	}
 
@@ -98,6 +98,9 @@ void Lex::start_lex(const char* filepath)
 
 void Lex::deal_token()
 {
+    
+    int is_unormal = deal_unnormal_token();
+    if(is_unormal != 0) return;
 	
     if((wd >= 'a' && wd <='z') || (wd >= 'A' && wd <= 'Z'))
     {
