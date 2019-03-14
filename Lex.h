@@ -23,11 +23,11 @@ public:
 
     void show_tktable();
     char wd;
-
-private:
-    string tmp_wd;
-	FILE *fd;
-	TkWord *tp;
     int tkcolor;
+    string tmp_wd;
+    FILE *fd;
+private:
+	TkWord *tp;
+    string lastword;
 };
 

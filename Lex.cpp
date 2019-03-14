@@ -7,7 +7,7 @@ using namespace std;
 Lex::Lex()
 {
 	init_lex();
-	//start_lex("./test.c");
+	start_lex("./test.c");
 
     //show_tktable();
 }
@@ -86,22 +86,21 @@ void Lex::start_lex(const char* filepath)
 		printf("file don't exit\n'");
 		return;
 	}
-	while(wd != EOF)
+	/*while(wd != EOF)
 	{
         tmp_wd.clear();
-		getword();
         deal_token();
-        show_token();
-	}
+	}*/
 
 }
 
 void Lex::deal_token()
 {
-    
+    tmp_wd.clear();
+    getword();
     int is_unormal = deal_unnormal_token();
-    if(is_unormal != 0) return;
 	
+    tmp_wd.clear();
     if((wd >= 'a' && wd <='z') || (wd >= 'A' && wd <= 'Z'))
     {
         tmp_wd += wd;
@@ -127,7 +126,7 @@ void Lex::deal_token()
             {
                 tkcolor = TK_REG;
             }
-            else tkcolor = KW_KEYWORD;
+            else tkcolor = tmp_find->tkcode;
         }
     }
 
@@ -174,6 +173,9 @@ void Lex::deal_token()
         tkcolor = TK_RL;
         tmp_wd += '}';
     }
+    lastword = tmp_wd;
+    show_token();
+    tmp_wd.clear();
 }
 int Lex::deal_unnormal_token()
 {
@@ -189,17 +191,19 @@ int Lex::deal_unnormal_token()
 			ungetc(wd, fd);
 			wd = '/';
 		}
+        show_token();
         return 1;
 	}
     else if(wd == '\n' || wd == '\t')
     {
-        tmp_wd += wd;
+        //show_token();
         return 1;
     }
 	else if(wd == ' ')
 	{
-        tmp_wd += wd;
+        if(lastword != ";") tmp_wd += wd;
 		deal_space();
+        show_token();
         return 1;
 	}
     return 0;
@@ -234,12 +238,11 @@ void Lex::deal_space()
 		getword();
 		if(wd == '\n' || wd == '\r' || wd == ' ')
 		{
-            tmp_wd += wd;
+            //tmp_wd += wd;
 			continue;
 		}
 		else
 		{
-            ungetc(wd, fd);
 			break;
 		}
 	}
@@ -291,7 +294,7 @@ void Lex::show_token()
     {
         printf("\033[36m");
     }
-    else if(tkcolor == KW_KEYWORD)
+    else if(tkcolor <= KW_KEYWORD && tkcolor >= KW_CHAR)
     {
         printf("\033[31m");
     }

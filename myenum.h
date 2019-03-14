@@ -34,7 +34,7 @@ enum token_code
     //关键字
     KW_CHAR,
     KW_SHORT,
-    KW_INT,
+    KW_INT, //28
     KW_VOID,
     KW_STRUCT,
     KW_IF,
