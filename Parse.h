@@ -16,6 +16,14 @@ public:
     void parse_function_calling(); //解析函数调用约定 _cdecl或_stdcall
     void parse_reg_assign();  //解析赋值语句
 
+    void parse_funcbody();  //解析函数体
+    void parse_compound_statement();  //解析复合语句
+    bool is_declare_type(int type);  //用于解析复合语句时判断是否是声明语句
+    void parse_normal_statement();  //解析判断语句或循环语句
+
+    void parse_if_statement();  //解析if语句
+    void parse_for_statement();  //解析for语句
+
     void parse_indent(); //控制缩进
 private:
     Lex *lex;

@@ -17,11 +17,11 @@ void Parse::parse_control()
     {
         syn_state = SYN_NULL;
         lex->deal_token();
-        parse_declaration(S_CGF); //每次解析一条语句
-        parse_indent();
+        parse_declaration(S_CGF); //每次解析一条(全局)声明语句或一个函数体
     }
 }
 
+//每次解析一条声明语句
 void Parse::parse_declaration(int type)
 {
     parse_declare_type();
@@ -51,6 +51,8 @@ void Parse::parse_declaration(int type)
         {
             syn_state = SYN_NL_ID;
             syn_level += 2;
+            parse_indent();
+            parse_funcbody();
             break;
         }
         else if(lex->tkcolor == TK_RL)
@@ -150,6 +152,59 @@ void Parse::parse_parameter_list()
 
 }
 
+void Parse::parse_funcbody()
+{
+    parse_compound_statement();
+}
+
+void Parse::parse_compound_statement()
+{
+    lex->deal_token();
+    //解析声明语句
+    while(is_declare_type(lex->tkcolor))
+    {
+        parse_declaration(S_CGF);
+        parse_indent();
+        lex->deal_token();
+    }
+    while(lex->tkcolor != TK_RL) //右括号函数体结束
+    {
+        parse_normal_statement();
+        lex->deal_token();
+    }
+    parse_indent();
+}
+
+bool Parse::is_declare_type(int type)
+{
+    switch(type)
+    {
+    case KW_INT:
+        return true;
+    case KW_CHAR:
+        return true;
+    case KW_SHORT:
+        return true;
+    default:
+        return false;
+    }
+}
+
+void Parse::parse_normal_statement()
+{
+
+}
+
+void Parse::parse_if_statement()
+{
+
+}
+
+void Parse::parse_for_statement()
+{
+
+}
+
 void Parse::parse_indent()
 {
     switch(syn_state)
@@ -183,5 +238,4 @@ void Parse::parse_indent()
         ungetc(lex->wd, lex->fd);
         break;
     }
-
 }
